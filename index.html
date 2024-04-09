@@ -131,61 +131,6 @@
             return re.test(email);
         };
 
-        // function getData() {
-        //         fetch('https://mipim.test/api/web/content')
-        //             .then(response => {
-        //                 if (!response.ok) {
-        //                     throw new Error('Network response was not ok');
-        //                 }
-        //                 return response.json();
-        //             })
-        //             .then(data => {
-        //                 // Handle the data returned from the API
-        //                 const items = data.data.items;
-        //                 items.forEach(item => {
-        //                     if (item.type === "Images") {
-        //                         // Create a new speaker-box div
-        //                         const speakerBox = document.createElement('div');
-        //                         speakerBox.classList.add('speaker-box');
-
-        //                         // Create the speaker-img div and append the image
-        //                         const speakerImgDiv = document.createElement('div');
-        //                         speakerImgDiv.classList.add('speaker-img');
-        //                         const img = document.createElement('img');
-        //                         img.src = item.file;
-        //                         img.alt = "Speaker Image";
-        //                         speakerImgDiv.appendChild(img);
-
-        //                         // Create and append the h3 element
-        //                         const h3 = document.createElement('h3');
-        //                         h3.textContent = item
-        //                             .title; // Assuming the speaker name is in the `title` property of the item
-
-        //                         // Create and append the p element
-        //                         const p = document.createElement('p');
-        //                         p.textContent = item
-        //                             .description; // Assuming the description is in the `description` property of the item
-
-        //                         // Append all elements to the speaker-box div
-        //                         speakerBox.appendChild(speakerImgDiv);
-        //                         speakerBox.appendChild(h3);
-        //                         speakerBox.appendChild(p);
-
-        //                         // Append the speaker-box div to the appropriate speakers-wrapper div
-        //                         const speakers = document.querySelectorAll('.speaker');
-        //                         if (speakers.length > 0) {
-        //                             speakers[speakers.length - 1].appendChild(speakerBox);
-        //                         }
-        //                     }
-        //                 });
-        //             })
-        //             .catch(error => {
-        //                 // Handle any errors that occur during the fetch operation
-        //                 console.error('Fetch error:', error);
-        //             });
-        //     }
-
-        //     getData();
         let items;
 
         function getData() {
