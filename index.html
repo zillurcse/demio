@@ -60,7 +60,7 @@
         <div class="container">
             <div class="tabs">
                 <ul>
-                    <li onclick="getData()" class="active">
+                    <!-- <li class="active">
                         11 January
                     </li>
                     <li>
@@ -71,47 +71,12 @@
                     </li>
                     <li>
                         10 February
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="speakers-wrapper">
                 <div class="speaker">
-                    <!-- <div class="speaker-box">
-                        <div class="speaker-img">
-                            <img src="./assets/img/conference_bkg.jpg" alt="">
-                        </div>
-                        <h3>
-                            speaker 2
-                        </h3>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat unde nihil beatae nesciunt
-                            corrupti possimus. At..
-                        </p>
-                    </div>
-                    <div class="speaker-box">
-                        <div class="speaker-img">
-                            <img src="./assets/img/conference_bkg.jpg" alt="">
-                        </div>
-                        <h3>
-                            speaker 3
-                        </h3>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat unde nihil beatae nesciunt
-                            corrupti possimus. At..
-                        </p>
-                    </div>
-                    <div class="speaker-box">
-                        <div class="speaker-img">
-                            <img src="./assets/img/conference_bkg.jpg" alt="">
-                        </div>
-                        <h3>
-                            speaker 4
-                        </h3>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat unde nihil beatae nesciunt
-                            corrupti possimus. At..
-                        </p>
-                    </div> -->
+
                 </div>
             </div>
         </div>
@@ -166,6 +131,8 @@
             return re.test(email);
         };
 
+        let items;
+
         function getData() {
             fetch('http://mipim.test/api/web/content')
                 .then(response => {
@@ -175,51 +142,98 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Handle the data returned from the API
-                    const items = data.data.items;
+                    items = data.data.items;
+                    const dates = new Set(); // Use a Set to store unique dates
                     items.forEach(item => {
-                        if (item.type === "Images") {
-                            // Create a new speaker-box div
-                            const speakerBox = document.createElement('div');
-                            speakerBox.classList.add('speaker-box');
 
-                            // Create the speaker-img div and append the image
-                            const speakerImgDiv = document.createElement('div');
-                            speakerImgDiv.classList.add('speaker-img');
-                            const img = document.createElement('img');
-                            img.src = item.file;
-                            img.alt = "Speaker Image";
-                            speakerImgDiv.appendChild(img);
-
-                            // Create and append the h3 element
-                            const h3 = document.createElement('h3');
-                            h3.textContent = item
-                                .title; // Assuming the speaker name is in the `title` property of the item
-
-                            // Create and append the p element
-                            const p = document.createElement('p');
-                            p.textContent = item
-                                .description; // Assuming the description is in the `description` property of the item
-
-                            // Append all elements to the speaker-box div
-                            speakerBox.appendChild(speakerImgDiv);
-                            speakerBox.appendChild(h3);
-                            speakerBox.appendChild(p);
-
-                            // Append the speaker-box div to the appropriate speakers-wrapper div
-                            const speakers = document.querySelectorAll('.speaker');
-                            if (speakers.length > 0) {
-                                speakers[speakers.length - 1].appendChild(speakerBox);
-                            }
+                        if (item.type === "Speaker") {
+                            const date = new Date(item.date).toLocaleDateString(); // Convert date to string
+                            dates.add(date);
                         }
                     });
+
+                    const tabsUl = document.querySelector('.tabs ul');
+                    tabsUl.innerHTML = ''; // Clear existing tabs
+                    dates.forEach(date => {
+                        const li = document.createElement('li');
+                        li.textContent = date;
+                        tabsUl.appendChild(li);
+                    });
+
+                    // Display speakers for the first date initially
+                    const firstDate = dates.values().next().value;
+                    displaySpeakersByDate(firstDate, items);
                 })
                 .catch(error => {
-                    // Handle any errors that occur during the fetch operation
                     console.error('Fetch error:', error);
                 });
         }
 
+        function displaySpeakersByDate(date, items) {
+            console.log(date, items);
+            const speakers = document.querySelector('.speaker');
+            speakers.innerHTML = ''; // Clear existing speakers
+            const dateTabs = document.querySelectorAll('.tabs ul li');
+
+            // Find the tab matching the selected date and add the active class to it
+            dateTabs.forEach(tab => {
+                if (tab.textContent === date) {
+                    tab.classList.add('active');
+                }
+            });
+            items.forEach(item => {
+                if (item.type === "Speaker" && new Date(item.date).toLocaleDateString() === date) {
+                    const speakerBox = document.createElement('div');
+                    speakerBox.classList.add('speaker-box');
+
+                    const speakerImgDiv = document.createElement('div');
+                    speakerImgDiv.classList.add('speaker-img');
+                    const img = document.createElement('img');
+                    img.src = item.file;
+                    img.alt = "Speaker Image";
+                    speakerImgDiv.appendChild(img);
+
+                    const h3 = document.createElement('h3');
+                    h3.textContent = item.title;
+
+                    const p = document.createElement('p');
+                    p.textContent = item.details.length > 30 ? item.details.substring(0, 30) + '...' :
+                        item.details;
+
+                    speakerBox.appendChild(speakerImgDiv);
+                    speakerBox.appendChild(h3);
+                    speakerBox.appendChild(p);
+
+                    speakers.appendChild(speakerBox);
+                }
+            });
+        }
+
+        // Event listener for tabs
+        const tabs = document.querySelector('.tabs ul');
+        tabs.addEventListener('click', function (event) {
+            if (event.target.tagName === 'LI') {
+                const selectedDate = event.target.textContent;
+                displaySpeakersByDate(selectedDate, items);
+            }
+
+            if (event.target.tagName === 'LI') {
+                // Remove active class from all tabs
+                const allTabs = tabs.querySelectorAll('li');
+                allTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // Add active class to the clicked tab
+                event.target.classList.add('active');
+
+                const selectedDate = event.target.textContent;
+
+                displaySpeakersByDate(selectedDate, items);
+            }
+        });
+
+        // Call getData function to fetch and display data
         getData();
 
         // Function to handle form submission
