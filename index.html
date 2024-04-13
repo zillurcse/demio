@@ -197,7 +197,7 @@
                     h3.textContent = item.title;
 
                     const p = document.createElement('p');
-                    p.textContent = item.details.length > 30 ? item.details.substring(0, 30) + '...' :
+                    p.textContent = item.details.length > 100 ? item.details.substring(0, 100) + '...' :
                         item.details;
 
                     speakerBox.appendChild(speakerImgDiv);
