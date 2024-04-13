@@ -60,18 +60,7 @@
         <div class="container">
             <div class="tabs">
                 <ul>
-                    <!-- <li class="active">
-                        11 January
-                    </li>
-                    <li>
-                        20 January
-                    </li>
-                    <li>
-                        30 January
-                    </li>
-                    <li>
-                        10 February
-                    </li> -->
+
                 </ul>
             </div>
             <div class="speakers-wrapper">
@@ -87,6 +76,37 @@
             © 2024 Ministry of Housing & Urban Planning, Oman. All rights reserved.
         </p>
     </footer>
+
+    <div class="speaker-modal">
+        <div class="modal-content">
+            <button class="close" id="modalCloseBtn" onclick="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+
+            </button>
+            <div class="modal-info">
+                <figure>
+                    <img src="" alt="">
+                </figure>
+                <div class="modal-info-text">
+                    <h2>
+
+                    </h2>
+                    <p>
+
+                    </p>
+                </div>
+            </div>
+            <div class="speaker-deatiles">
+                <p>
+
+                </p>
+            </div>
+        </div>
+
+    </div>
     <script type="text/javascript">
         (function (d, t) {
             var s = d.createElement(t),
@@ -197,9 +217,10 @@
                     h3.textContent = item.title;
 
                     const p = document.createElement('p');
-                    p.textContent = item.details.length > 30 ? item.details.substring(0, 30) + '...' :
-                        item.details;
-
+                    p.textContent = item.position
+                    speakerBox.addEventListener('click', () => {
+                        displaySpeakerDetails(item.id, items);
+                    });
                     speakerBox.appendChild(speakerImgDiv);
                     speakerBox.appendChild(h3);
                     speakerBox.appendChild(p);
@@ -235,6 +256,29 @@
 
         // Call getData function to fetch and display data
         getData();
+
+        function displaySpeakerDetails(id, items) {
+            const speaker = items.find(item => item.type === 'Speaker' && item.id === id);
+            const modal = document.querySelector('.speaker-modal');
+            const modalImg = modal.querySelector('img');
+            const modalTitle = modal.querySelector('.modal-info-text h2');
+            const modalDescription = modal.querySelector('.modal-info-text p');
+            const modalDetails = modal.querySelector('.speaker-deatiles p');
+
+            modalImg.src = speaker.file;
+            modalTitle.textContent = speaker.title;
+            modalDescription.textContent = speaker.position;
+            modalDetails.textContent = speaker.details;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.speaker-modal');
+            modal.style.display = 'none';
+        }
+
+
 
         // Function to handle form submission
         function handleSubmit(event) {
